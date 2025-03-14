@@ -7,22 +7,44 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "build:icons": "tsx src/assets/iconify-icons/bundle-icons-css.ts",
+    "postinstall": "npm run build:icons"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.7",
+    "@mui/material-nextjs": "^6.4.3",
+    "@reactuses/core": "^6.0.1",
     "axios": "^1.8.2",
+    "classnames": "^2.5.1",
     "next": "15.2.1",
+    "prettier": "^3.5.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@iconify/json": "^2.2.316",
+    "@iconify/tools": "^4.1.1",
+    "@iconify/types": "^2.0.0",
+    "@iconify/utils": "^2.3.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-typescript": "^3.8.7",
+    "eslint-plugin-import": "^2.31.0",
+    "remixicon": "^4.6.0",
+    "stylelint": "^16.16.0",
+    "stylelint-use-logical-spec": "^5.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
