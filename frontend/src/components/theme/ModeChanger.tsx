@@ -10,11 +10,11 @@ import { useSettings } from '@core/hooks/useSettings'
 const ModeChanger = () => {
   // Hooks
   const { setMode } = useColorScheme()
-  const { settings } = useSettings()
-
+  //const { settings } = useSettings()
+ const settings = {mode: 'light'};
   useEffect(() => {
     if (settings.mode) {
-      setMode(settings.mode)
+      setMode('light');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.mode])

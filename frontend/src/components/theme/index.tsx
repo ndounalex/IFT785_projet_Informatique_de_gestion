@@ -68,18 +68,19 @@ const ThemeProvider = (props: Props) => {
       }
     }
 
-    const coreTheme = deepmerge(defaultCoreTheme(settings.mode || 'light', direction), newColorScheme)
+    const coreTheme = deepmerge(defaultCoreTheme(/* settings.mode || */ 'light', direction), newColorScheme)
 
     return extendTheme(coreTheme)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.mode])
+  //}, [settings.mode])
+}, [])
 
   return (
     <AppRouterCacheProvider options={{ prepend: true }}>
       <CssVarsProvider
         theme={theme}
-        defaultMode={settings.mode}
+        defaultMode={/* settings.mode */'light'}
         modeStorageKey={`${themeConfig.templateName.toLowerCase().split(' ').join('-')}-mui-template-mode`}
       >
         <>

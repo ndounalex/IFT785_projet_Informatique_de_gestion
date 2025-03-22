@@ -1,8 +1,9 @@
-'use client'
-
+'use client';
+import { getProviders } from "next-auth/react"
 // React Imports
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { signIn } from 'next-auth/react'; 
 
 // Next Imports
 import Link from 'next/link'
@@ -37,6 +38,11 @@ const Login = ({ mode }: { mode: Mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 
+  console.log("============ is password shown ============", isPasswordShown)
+/* useEffect(() => {        
+    signIn('credentials');    
+  }, []); */
+
   // Vars
   const darkImg = '/images/pages/auth-v1-mask-dark.png'
   const lightImg = '/images/pages/auth-v1-mask-light.png'
@@ -45,7 +51,10 @@ const Login = ({ mode }: { mode: Mode }) => {
   const router = useRouter()
   const authBackground = useImageVariant(mode, lightImg, darkImg)
 
-  const handleClickShowPassword = () => setIsPasswordShown(show => !show)
+  const handleClickShowPassword = () => {
+    console.log("============= mes que un club =============")
+    setIsPasswordShown(show => !show)
+  }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
