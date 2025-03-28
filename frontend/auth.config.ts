@@ -26,23 +26,9 @@ export const authConfig = {
         return {...token, ...user};
     },
     async session({session, token, user}) {
+        console.log("============= session =============", {session, token, user})
         session.user = token as any;
         return session;
-    },
-    /* authorized({ auth, request: { nextUrl } }) {
-      return !!auth;
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      console.log("=============== mes que un club");
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return Response.redirect(new URL('/login', nextUrl)); // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
-      }else{
-        return Response.redirect(new URL('/login', nextUrl)); 
-      }
-      return true;
-    }, */
+    }
   },
 } satisfies NextAuthConfig;

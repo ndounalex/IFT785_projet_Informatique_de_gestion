@@ -12,12 +12,12 @@ const ModeChanger = () => {
   const { setMode } = useColorScheme()
   //const { settings } = useSettings()
  const settings = {mode: 'light'};
-  useEffect(() => {
+  /* useEffect(() => {
     if (settings.mode) {
       setMode('light');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.mode])
+  }, [settings.mode]) */
 
   return null
 }

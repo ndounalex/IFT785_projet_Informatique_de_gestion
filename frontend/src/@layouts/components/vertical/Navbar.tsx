@@ -23,7 +23,7 @@ const Navbar = (props: Props) => {
 
   return (
     <StyledHeader
-      overrideStyles={overrideStyles}
+      overrideStyles={{...overrideStyles, "width": "100%"}}
       className={classnames(
         verticalLayoutClasses.header,
         verticalLayoutClasses.headerContentCompact,
@@ -31,7 +31,7 @@ const Navbar = (props: Props) => {
         verticalLayoutClasses.headerDetached
       )}
     >
-      <div className={classnames(verticalLayoutClasses.navbar, 'flex bs-full')}>{children}</div>
+      <div className={classnames(verticalLayoutClasses.navbar, 'flex bs-full')} style={{"justifyContent": "flex-end"}}>{children}</div>
     </StyledHeader>
   )
 }

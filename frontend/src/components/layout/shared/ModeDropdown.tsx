@@ -21,27 +21,28 @@ const ModeDropdown = () => {
   const { settings, updateSettings } = useSettings()
 
   const handleToggle = () => {
-    if (settings.mode === 'dark') {
+    /* if (settings.mode === 'dark') {
       updateSettings({ mode: 'light' })
     }
 
     if (settings.mode === 'light') {
       updateSettings({ mode: 'dark' })
-    }
+    } */
   }
 
   const getModeIcon = () => {
-    if (settings.mode === 'dark') {
+/*     if (settings.mode === 'dark') {
       return 'ri-moon-clear-line'
     } else {
       return 'ri-sun-line'
-    }
+    } */
+   return 'ri-sun-line';
   }
-
+  let title =""; //settings.mode + ' Mode'
   return (
     <>
       <Tooltip
-        title={settings.mode + ' Mode'}
+        title={title}
         onOpen={() => setTooltipOpen(true)}
         onClose={() => setTooltipOpen(false)}
         open={tooltipOpen}

@@ -4,7 +4,8 @@ import { getProviders } from "next-auth/react"
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { signIn } from 'next-auth/react'; 
-
+import api from '../app/auth/axios.config';
+import { AuthActions } from "@/app/auth/utils";
 // Next Imports
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -33,11 +34,13 @@ import themeConfig from '@configs/themeConfig'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
+import axios from "axios";
 
 const Login = ({ mode }: { mode: Mode }) => {
   // States
+  const { login, storeToken } = AuthActions();
   const [isPasswordShown, setIsPasswordShown] = useState(false)
-
+  const [formData, setFormData] = useState({email:'', password:''});
   console.log("============ is password shown ============", isPasswordShown)
 /* useEffect(() => {        
     signIn('credentials');    
@@ -56,9 +59,22 @@ const Login = ({ mode }: { mode: Mode }) => {
     setIsPasswordShown(show => !show)
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    router.push('/')
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("===== formData =========== 11", formData, api);
+    e.preventDefault();
+    login(formData.email, formData.password).then((res) => {
+      const {data} = res;
+      console.log("============= res =============", {data, res})
+      if(res.status === 200){
+        console.log("============= res =============", data)
+        storeToken(data.access, "access");
+        storeToken(data.refresh, "refresh");
+        //signIn('credentials');
+      }
+    }).catch((err) => {
+      console.log("============= err =============", err)
+    })
+   // router.push('/')
   }
 
   return (
@@ -74,12 +90,15 @@ const Login = ({ mode }: { mode: Mode }) => {
               <Typography className='mbs-1'>Please sign-in to your account and start the adventure</Typography>
             </div>
             <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-5'>
-              <TextField autoFocus fullWidth label='Email' />
+              <TextField autoFocus 
+              onChange = {(e) => setFormData({...formData, email:e.target.value})}
+              fullWidth label='Email' />
               <TextField
                 fullWidth
                 label='Password'
                 id='outlined-adornment-password'
                 type={isPasswordShown ? 'text' : 'password'}
+                onChange={(e) => setFormData({...formData, password:e.target.value})}
                 slotProps={{
                   input: {
                     endAdornment: (
