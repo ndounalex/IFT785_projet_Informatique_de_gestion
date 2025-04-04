@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import { AuthActions } from "@/app/auth/utils";
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -37,7 +38,7 @@ const UserDropdown = () => {
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
-
+  const { getUserData, logout, removeTokens} = AuthActions();
   // Hooks
   const router = useRouter()
 
@@ -46,16 +47,23 @@ const UserDropdown = () => {
   }
 
   const handleDropdownClose = (event?: MouseEvent<HTMLLIElement> | (MouseEvent | TouchEvent), url?: string) => {
-    if (url) {
-      router.push(url)
-    }
-
-    if (anchorRef.current && anchorRef.current.contains(event?.target as HTMLElement)) {
-      return
-    }
-
-    setOpen(false)
+    logout().then((res) => {
+      if (url) {
+        router.push(url)
+      }
+      removeTokens();
+      if (anchorRef.current && anchorRef.current.contains(event?.target as HTMLElement)) {
+        return
+      }
+      setOpen(false)
+    }).catch((err) => {
+      console.log("============= err =============", err)
+    })
+    
   }
+
+
+     const userData = getUserData();
 
   return (
     <>
@@ -68,7 +76,7 @@ const UserDropdown = () => {
       >
         <Avatar
           ref={anchorRef}
-          alt='John Doe'
+          alt={`${userData?.lastname||''} ${userData?.firstname||''}`}
           src='/images/avatars/1.png'
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
@@ -96,27 +104,20 @@ const UserDropdown = () => {
                     <Avatar alt='John Doe' src='/images/avatars/1.png' />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        John Doe
+                      {`${userData?.lastname||''} ${userData?.firstname||''}`}
                       </Typography>
-                      <Typography variant='caption'>Admin</Typography>
+                      <Typography variant='caption'>{
+                      userData.is_admin?"Admin":(userData.is_manager?"Manager":"Employé")}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
                   <MenuItem className='gap-3' onClick={e => handleDropdownClose(e)}>
                     <i className='ri-user-3-line' />
-                    <Typography color='text.primary'>My Profile</Typography>
+                    <Typography color='text.primary'>Mon profil</Typography>
                   </MenuItem>
                   <MenuItem className='gap-3' onClick={e => handleDropdownClose(e)}>
                     <i className='ri-settings-4-line' />
-                    <Typography color='text.primary'>Settings</Typography>
-                  </MenuItem>
-                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-money-dollar-circle-line' />
-                    <Typography color='text.primary'>Pricing</Typography>
-                  </MenuItem>
-                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-question-line' />
-                    <Typography color='text.primary'>FAQ</Typography>
+                    <Typography color='text.primary'>Paramètres</Typography>
                   </MenuItem>
                   <div className='flex items-center plb-2 pli-4'>
                     <Button
@@ -128,7 +129,7 @@ const UserDropdown = () => {
                       onClick={e => handleDropdownClose(e, '/login')}
                       sx={{ '& .MuiButton-endIcon': { marginInlineStart: 1.5 } }}
                     >
-                      Logout
+                      Deconnexion
                     </Button>
                   </div>
                 </MenuList>

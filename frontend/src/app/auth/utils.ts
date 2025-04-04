@@ -32,6 +32,7 @@ const storeToken = (token: string, type: "access" | "refresh") => {
   const removeTokens = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
+    Cookies.remove("user");
   };
 
   const register = (email: string, username: string, password: string) => {
