@@ -12,7 +12,7 @@ export default  auth((request: NextRequest)=> {
   const { pathname } = request.nextUrl;
   console.log(pathname);
   console.log(pathname.startsWith('/login'));
-  const cookieStore = cookies();
+  // const cookieStore = cookies();
   console.log("============ mes que un club ==========", request.cookies)
   const accessToken = request.cookies.get("accessToken")?.value;
   console.log({accessToken, myCookies})
@@ -20,11 +20,13 @@ export default  auth((request: NextRequest)=> {
   // Define the paths that need protection
   if (!accessToken && !pathname.startsWith('/login')) {
       return NextResponse.redirect(new URL('/login', request.url));
-  }else if(accessToken && !pathname.startsWith('/dashboard')){
-    console.log("================ reditect to dashboard item ================",{url:request.url, previous_url: pathname})
+  }else if(accessToken && (pathname=='/')){
     return NextResponse.redirect(new URL('/dashboard', request.url));
     // return NextResponse.next();
-  }
+  }/* else if(accessToken && !pathname.startsWith('/dashboard')){
+    console.log("================ reditect to dashboard item ================",{url:request.url, previous_url: pathname})
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  } */
   //return NextResponse.redirect(new URL('/login', request.url))
   return NextResponse.next();
 })

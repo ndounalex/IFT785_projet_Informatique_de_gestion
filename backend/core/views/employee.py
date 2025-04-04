@@ -8,3 +8,7 @@ from core.models.employee import Employee
 class EmployeeView(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     queryset = Employee.objects.all()
+
+class ActiveEmployeeView(viewsets.ModelViewSet):
+    serializer_class = EmployeeSerializer
+    queryset = Employee.objects.filter(is_active=True, is_deleted=False)

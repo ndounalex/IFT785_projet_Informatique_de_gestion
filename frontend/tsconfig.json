@@ -29,6 +29,9 @@
       "@views/*": [
         "./src/views/*"
       ],
+      "@libs/*": [
+        "./src/libs/*"
+      ],
       "@core/*": [
         "./src/@core/*"
       ],

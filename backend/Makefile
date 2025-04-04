@@ -48,7 +48,7 @@ clean-venv:
 	$(RM) $(VENV)
 
 run:
-	python app.py
+	python manage.py runserver
 
 install:
 	pip install -r requirements-dev.txt

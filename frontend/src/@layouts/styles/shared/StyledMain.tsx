@@ -10,6 +10,7 @@ type StyledMainProps = {
 
 const StyledMain = styled.main<StyledMainProps>`
   padding: ${themeConfig.layoutPadding}px;
+  width: 100%;
   ${({ isContentCompact }) =>
     isContentCompact &&
     `

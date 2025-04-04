@@ -38,7 +38,7 @@ import axios from "axios";
 
 const Login = ({ mode }: { mode: Mode }) => {
   // States
-  const { login, storeToken } = AuthActions();
+  const { login, storeToken, storeUserData } = AuthActions();
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [formData, setFormData] = useState({email:'', password:''});
   console.log("============ is password shown ============", isPasswordShown)
@@ -55,20 +55,18 @@ const Login = ({ mode }: { mode: Mode }) => {
   const authBackground = useImageVariant(mode, lightImg, darkImg)
 
   const handleClickShowPassword = () => {
-    console.log("============= mes que un club =============")
     setIsPasswordShown(show => !show)
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    console.log("===== formData =========== 11", formData, api);
     e.preventDefault();
     login(formData.email, formData.password).then((res) => {
       const {data} = res;
-      console.log("============= res =============", {data, res})
       if(res.status === 200){
-        console.log("============= res =============", data)
         storeToken(data.access, "access");
         storeToken(data.refresh, "refresh");
+        storeUserData(data.user, "user");
+        router.push('/dashboard');
         //signIn('credentials');
       }
     }).catch((err) => {

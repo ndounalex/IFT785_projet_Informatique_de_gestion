@@ -8,6 +8,14 @@ import Cookies from "js-cookie";
 const storeToken = (token: string, type: "access" | "refresh") => {
     Cookies.set(type + "Token", token);
   };
+
+  const storeUserData = (user: any, type: "user") => {
+    Cookies.set(type, JSON.stringify(user));
+  };
+
+  const getUserData = () => {
+    return JSON.parse(Cookies.get("user")||"{}");
+  };
   
   /**
    * Retrieves a token from cookies.
@@ -31,7 +39,7 @@ const storeToken = (token: string, type: "access" | "refresh") => {
   };
   
   const login = (email: string, password: string) => {
-    return api.post( "/auth/jwt/create", { username: email, password },);
+    return api.post( "/auth/jwt/create", { username: email, password, email },);
   };
   
   const logout = () => {
@@ -69,6 +77,8 @@ const storeToken = (token: string, type: "access" | "refresh") => {
       resetPassword,
       storeToken,
       getToken,
+      storeUserData,
+      getUserData,
       logout,
       removeTokens,
     };

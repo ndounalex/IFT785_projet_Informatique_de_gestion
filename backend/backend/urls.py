@@ -19,13 +19,22 @@ from django.urls import path
 from rest_framework import routers
 from django.conf.urls import include
 from core import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = routers.DefaultRouter()
 router.register(r'employees', views.EmployeeView, 'employee')
+router.register(r'managers', views.ActiveEmployeeView, 'manager')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/token/', views.MyObtainTokenPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path("auth/logout/", views.LogoutView.as_view()),
+    path("api/holiday_create/", views.CrudHolidaysRequestView.as_view()),
+    path("api/team/", views.CrudTeamView.as_view()),
+    path("api/teams/", views.ListTeamView.as_view()),
+    path("api/team_holidays_requests/", views.TeamHolidaysRequestView.as_view()),
 ]

@@ -7,5 +7,6 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 # Register your models here.
 
-admin.site.register(Employee, EmployeeAdmin)
+#admin.site.register(Employee, EmployeeAdmin)
+admin.site.register(Employee)
 # Register your models here.
