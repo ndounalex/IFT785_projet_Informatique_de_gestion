@@ -41,7 +41,6 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
 
    const { getUserData } = AuthActions();
    const userData = getUserData();
-   console.log({userData})
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
   return (
@@ -118,6 +117,18 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
             target='_blank'
           >
             Gestion des formations
+          </MenuItem>:null}
+          {userData?.is_admin?<MenuItem
+            /* href={`/manage_employee`} */
+            onClick={() => {
+              router.push('/skills');
+            }
+            }
+            icon={<i className='ri-survey-line' />}
+            /* suffix={<Chip label='Pro' size='small' color='primary' variant='tonal' />} */
+            target='_blank'
+          >
+            Gestion des compétences
           </MenuItem>:null}
           <MenuItem
             onClick={() => {

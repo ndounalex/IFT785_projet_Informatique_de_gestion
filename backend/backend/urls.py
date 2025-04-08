@@ -40,4 +40,6 @@ urlpatterns = [
     path("api/team_holidays_requests/", views.TeamHolidaysRequestView.as_view()),
     path("api/vacation_type/", views.CrudVacationTypesView.as_view()),
     path("api/notifications/", views.NotificationFrontEndView.as_view()),
+    path("api/skills/", views.SkillView.as_view()),
+    path("api/skills_list/", views.ListSkillView.as_view()),
 ]
