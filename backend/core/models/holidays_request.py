@@ -2,7 +2,7 @@ from django.db import models
 from core.models.common import common
 from core.models.employee import Employee
 from datetime import datetime
-from core.models.choices import STATUS_REQUEST_CHOICES, STATUS_IN_TREATMENT, STATES
+from core.models.choices import STATUS_REQUEST_CHOICES, STATUS_IN_TREATMENT
 from .state_vacation import InTreatment, Approved, Rejected
 
 STATES = {

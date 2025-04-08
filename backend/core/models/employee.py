@@ -3,6 +3,7 @@ from .common import common
 from django.contrib.auth.models import AbstractUser
 from core.models.team import Team
 from datetime import datetime
+from core.models.skills import Skills
 
 class Employee(common, AbstractUser):  # STUDENT 
     firstname = models.TextField()
@@ -14,6 +15,9 @@ class Employee(common, AbstractUser):  # STUDENT
     is_active = models.BooleanField(default=True)
     holiday_balance = models.IntegerField(default=15)
     hiring_date = models.DateField(default=datetime.now)
+    skills = models.ManyToManyField(
+        Skills, related_name="employee_acquired_skills", blank=True
+    )
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True, related_name='members')
     
     USERNAME_FIELD = 'email'

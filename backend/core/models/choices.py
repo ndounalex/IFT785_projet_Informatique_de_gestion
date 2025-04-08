@@ -1,4 +1,4 @@
-from .state_vacation import InTreatment, Approved, Rejected
+
 
 STATUS_VALIDATE = 'V'
 STATUS_REFUSED = 'R'
@@ -10,8 +10,25 @@ STATUS_REQUEST_CHOICES = [
     (STATUS_IN_TREATMENT, 'En traitement'),
 ]
 
-STATES = {
-    "I": InTreatment(),
-    "V": Approved(),
-    "R": Rejected(),
-}
+LEVEL_STARTER = '1'
+LEVEL_INTERMEDIATE = '2'
+LEVEL_ADVANCED = '3'
+LEVEL_EXPERT = '4'
+
+LEVEL_CHOICES = [
+    (LEVEL_STARTER, 'Débutant'),
+    (LEVEL_INTERMEDIATE, 'Intermédiaire'),
+    (LEVEL_ADVANCED, 'Avancé'),
+    (LEVEL_EXPERT, 'Expert'),
+]
+
+REGISTRATION_STATUS_PLANNED = 'P'
+REGISTRATION_STATUS_IN_PROGRESS = 'E'
+REGISTRATION_STATUS_COMPLETED = 'T'
+REGISTRATION_STATUS_CANCELLED = 'A'
+REGISTRATION_STATUS_CHOICES = [
+    (REGISTRATION_STATUS_PLANNED, 'Prévue'),
+    (REGISTRATION_STATUS_IN_PROGRESS, 'En cours'),
+    (REGISTRATION_STATUS_COMPLETED, 'Terminée'),
+    (REGISTRATION_STATUS_CANCELLED, 'Annulée'),
+]
