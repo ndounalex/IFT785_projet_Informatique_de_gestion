@@ -125,7 +125,6 @@ const MyVacation = () => {
       headerName: "Type de congé",
       width: 200,
       valueGetter: (value) => {
-        console.log("value", value);
         return value?.label;
       },
     },

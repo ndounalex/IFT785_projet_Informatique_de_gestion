@@ -66,9 +66,10 @@ const UserDropdown = () => {
      const userData = getUserData();
 
   return (
-    <>
+    < >
       <Badge
         ref={anchorRef}
+        style={{marginLeft:"20px"}}
         overlap='circular'
         badgeContent={<BadgeContentSpan onClick={handleDropdownOpen} />}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
