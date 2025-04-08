@@ -34,7 +34,9 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path("auth/logout/", views.LogoutView.as_view()),
     path("api/holiday_create/", views.CrudHolidaysRequestView.as_view()),
+    path("api/holiday_validate/", views.ValidateHolidaysRequestView.as_view()),
     path("api/team/", views.CrudTeamView.as_view()),
     path("api/teams/", views.ListTeamView.as_view()),
     path("api/team_holidays_requests/", views.TeamHolidaysRequestView.as_view()),
+    path("api/vacation_type/", views.CrudVacationTypesView.as_view()),
 ]

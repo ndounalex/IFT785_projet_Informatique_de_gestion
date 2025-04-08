@@ -38,7 +38,7 @@ const MyVacation = () => {
       const {data} = res;
       setAllHolidaysRequest(data);
     }).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     })
   }, [refreshTable]);
 
@@ -49,18 +49,15 @@ const MyVacation = () => {
       ...prevState,
       [key]: value,
     }));
-    console.log("============ update form data ============", formValues)
   };
 
   const editHolidayRequestItem = (id: number) => {
-    console.log("=================== edit employee item =====================", {formValues})
     api.put(`/api/employees/${id}`, {...formValues}).then((res) => {
-    console.log("============= res =============", res)
     setRefreshTable(!refreshTable);
     handleClose(); 
     }
     ).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
@@ -71,7 +68,7 @@ const MyVacation = () => {
     handleClose(); 
     }
     ).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
@@ -79,15 +76,18 @@ const MyVacation = () => {
   
 
   const saveHolidaysRequest = () => {
+    console.log({formValues})
     const dataValues={
       holidays_begin: moment(formValues.holidays_begin).format('YYYY-MM-DD'),
       holidays_end: moment(formValues.holidays_end).format('YYYY-MM-DD'),
+      vacation_type: formValues.vacation_type,
+      comments: formValues.comments,
     }
     api.post('/api/holiday_create/', {...dataValues}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose();
     }).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
@@ -118,8 +118,17 @@ const MyVacation = () => {
       },
     },
     
-    { field: 'holidays_begin', headerName: 'Date début', width: 300 },
-    { field: 'holidays_end', headerName: 'Date fin', width: 300 },
+    { field: 'holidays_begin', headerName: 'Date début', width: 150 },
+    { field: 'holidays_end', headerName: 'Date fin', width: 150 },
+    {
+      field: "vacation_type",
+      headerName: "Type de congé",
+      width: 200,
+      valueGetter: (value) => {
+        console.log("value", value);
+        return value?.label;
+      },
+    },
     {
       field: 'status',
       headerName: 'Statut',
@@ -146,7 +155,7 @@ const MyVacation = () => {
     }, */
   ];
   
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: 25 };
   return (
     <Grid container spacing={6} style={{width:"100%"}}>
       <Snackbar
@@ -192,12 +201,12 @@ const MyVacation = () => {
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-      {allHolidaysRequest.length?<Paper sx={{ height: 400, width: '100%' }}>
+      {allHolidaysRequest.length?<Paper sx={{ height: "100%", width: '100%' }}>
       <DataGrid
         rows={allHolidaysRequest}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[25]}
         checkboxSelection
         sx={{ border: 0 }}
       />

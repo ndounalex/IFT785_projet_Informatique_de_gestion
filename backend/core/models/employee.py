@@ -2,6 +2,7 @@ from django.db import models
 from .common import common
 from django.contrib.auth.models import AbstractUser
 from core.models.team import Team
+from datetime import datetime
 
 class Employee(common, AbstractUser):  # STUDENT 
     firstname = models.TextField()
@@ -12,6 +13,7 @@ class Employee(common, AbstractUser):  # STUDENT
     my_manager = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subordinates')
     is_active = models.BooleanField(default=True)
     holiday_balance = models.IntegerField(default=15)
+    hiring_date = models.DateField(default=datetime.now)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True, related_name='members')
     
     USERNAME_FIELD = 'email'

@@ -32,7 +32,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             'lastname': user.lastname,
             'is_manager': user.is_manager,
             'is_admin': user.is_admin,
-            'team': user.team.id,
+            'team': user.team.id if user.team else None,
             'id':user.id
         }
         """ Add extra responses here should you wish

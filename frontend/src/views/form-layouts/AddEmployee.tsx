@@ -23,10 +23,19 @@ import InputLabel from '@mui/material/InputLabel'; */
 import MenuItem from '@mui/material/MenuItem';
 import api from "@/app/auth/axios.config";
 
+interface defaultFormData {
+  lastname: string;
+  firstname: string;
+  email: string;
+  is_manager: boolean;
+  team: string;
+}
+
 interface MyFormProps {
     /** The text to display inside the button */
     updateFormData: Function;
-  }
+    defaultFormData?: defaultFormData;
+}
 
 const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
   // States

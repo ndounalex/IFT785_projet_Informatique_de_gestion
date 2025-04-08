@@ -20,6 +20,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
+interface defaultFormData {
+  lastname: string;
+  firstname: string;
+  email: string;
+  is_manager: boolean;
+  team: string;
+}
+
 const ManageEmployee = () => {
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -27,6 +35,13 @@ const ManageEmployee = () => {
   const [allEmployees, setAllEmployees] = useState([]);
   const [refreshTable, setRefreshTable] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
+  const [defaultFormData, setDefaultFormData] = useState<defaultFormData>({
+    lastname: "",
+    firstname: "",
+    email: "",
+    is_manager: false,
+    team: ""
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,7 +50,6 @@ const ManageEmployee = () => {
   useEffect(() => {
     api.get('/api/employees').then((res) => {
       const {data} = res;
-      console.log("============= res =============", res)
       setAllEmployees(data);
     }).catch((err) => {
       console.log("============= err =============", err)
@@ -99,12 +113,14 @@ const ManageEmployee = () => {
       width: 100,
       cellClassName: 'actions',
       getActions: (employee:any) => {
+        console.log("============ employee =============", employee)
         return [
 
           <IconButton 
             key="1_ma_emp"
             aria-label="edit" size="small" onClick={
               () =>{
+                
                 editEmployeeItem(employee.id)
               }
               }>
@@ -176,7 +192,7 @@ const ManageEmployee = () => {
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          <FormLayoutsBasic updateFormData={updateFormData}/>
+          <FormLayoutsBasic updateFormData={updateFormData} defaultFormData={defaultFormData}/>
         </DialogContent>
         <DialogActions>
         <Grid item xs={12}>
