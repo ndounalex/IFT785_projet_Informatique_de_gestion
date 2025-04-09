@@ -22,6 +22,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel'; */
 import MenuItem from '@mui/material/MenuItem';
 import api from "@/app/auth/axios.config";
+import { set } from 'zod';
 
 interface defaultFormData {
   lastname: string;
@@ -43,6 +44,8 @@ const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
   const [myTeam, setMyTeam] = useState('')
   const [managers, setManagers] = useState([])
   const [teams, setTeams] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
+  const [skills, setSkills] = useState([]);
 
   useEffect(() => {
     api.get('/api/managers').then((res) => {
@@ -55,6 +58,12 @@ const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
     api.get('/api/teams').then((res) => {
       const {data} = res;
       setTeams(data);
+    }).catch((err) => {
+      console.log("============= err =============", err)
+    })
+    api.get('/api/skills_list').then((res) => {
+      const {data} = res;
+      setAllSkills(data);
     }).catch((err) => {
       console.log("============= err =============", err)
     })
@@ -118,70 +127,41 @@ const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
             </TextField>
 
             </Grid>
+
+            <Grid item xs={12}>
+            <TextField id="skills" label="Compétences"
+            style={{ width: "100%" }}
+            value={skills}
+            slotProps={{
+              select: {
+                multiple: true,
+              },
+            }}
+            onChange={(e) => {
+              console.log({e})
+              setSkills(e.target.value);
+              updateFormData("skills", e.target.value);
+            }}
+            select>
+                {allSkills.map((skill:any) => {
+                  const choices = {
+                    D: "Débutant",
+                    I: "Intermédiaire",
+                    A: "Avancé",
+                    E: "Expert",
+                  };
+                  return (
+                  <MenuItem key={skill.id} value={skill.id}>
+                    {`${skill.name} - ${choices[skill.level]}`}
+                  </MenuItem>
+                )})}
+            </TextField>
+
+            </Grid>
             
-{/*             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label='Password'
-                placeholder='············'
-                id='password'
-                type={isPasswordShown ? 'text' : 'password'}
-                helperText='Use 8 or more characters with a mix of letters, numbers & symbols'
-                slotProps={{
-                 input:{ endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        size='small'
-                        edge='end'
-                        onClick={handleClickShowPassword}
-                        onMouseDown={e => e.preventDefault()}
-                        aria-label='toggle password visibility'
-                      >
-                        <i className={isPasswordShown ? 'ri-eye-off-line' : 'ri-eye-line'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )}
-                }}
-              />
-            </Grid> */}
-{/*             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label='Confirm Password'
-                placeholder='············'
-                id='confirm-password'
-                type={isConfirmPasswordShown ? 'text' : 'password'}
-                helperText='Make sure to type the same password as above'
-                slotProps={{
-                  input:{endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        size='small'
-                        edge='end'
-                        onClick={handleClickShowConfirmPassword}
-                        onMouseDown={e => e.preventDefault()}
-                        aria-label='toggle confirm password visibility'
-                      >
-                        <i className={isConfirmPasswordShown ? 'ri-eye-off-line' : 'ri-eye-line'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )}
-                }}
-              />
-            </Grid> */}
-{/*             <Grid item xs={12}>
-              <div className='flex items-center justify-between flex-wrap gap-5'>
-                <Button variant='contained' type='submit'>
-                  Get Started!
-                </Button>
-                <div className='flex items-center justify-center gap-2'>
-                  <Typography color='text.primary'>Already have an account?</Typography>
-                  <Link href='/' onClick={e => e.preventDefault()} className='text-primary'>
-                    Log In
-                  </Link>
-                </div>
-              </div>
-            </Grid> */}
+
+
+
           </Grid>
   )
 }

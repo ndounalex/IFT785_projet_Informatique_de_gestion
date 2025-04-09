@@ -78,8 +78,8 @@ const MyVacation = () => {
   const saveHolidaysRequest = () => {
     console.log({formValues})
     const dataValues={
-      holidays_begin: moment(formValues.holidays_begin).format('YYYY-MM-DD'),
-      holidays_end: moment(formValues.holidays_end).format('YYYY-MM-DD'),
+      holidays_begin: moment(new Date(formValues.holidays_begin)).format('YYYY-MM-DD'),
+      holidays_end: moment(new Date(formValues.holidays_end)).format('YYYY-MM-DD'),
       vacation_type: formValues.vacation_type,
       comments: formValues.comments,
     }

@@ -2,9 +2,9 @@
 
 'use client';
 import Grid from '@mui/material/Grid'
-import React, { use, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 // Component Imports
-import AddTraining from '@views/form-layouts/AddTraining'
+import AddSkill from '@views/form-layouts/AddSkill'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,28 +14,28 @@ import api from "@/app/auth/axios.config";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import moment from 'moment';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
-const ManageTraining = () => {
+const ManageSkills = () => {
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState({
   });
-  const [allTraining, setAllTraining] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
   const [refreshTable, setRefreshTable] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
+  const [defaultValue, setDefaultValue] = useState(null)
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   useEffect(() => {
-    api.get('/api/training').then((res) => {
+    api.get('/api/skills_list').then((res) => {
       const {data} = res;
-      setAllTraining(data);
+      setAllSkills(data);
     }).catch((err) => {
       console.log({err})
     })
@@ -50,19 +50,22 @@ const ManageTraining = () => {
     }));
   };
 
-  const editTraining = (id: number) => {
-    api.put(`/api/training/`, {...formValues}).then((res) => {
+  const editSkill = (skill) => {
+    setDefaultValue(skill);
+    setFormValues(skill);
+    setOpen(true);
+  }
+/*     api.put(`/api/skill`, {...formValues}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose(); 
     }
     ).catch((err) => {
       console.log({err})
     }
-    )
-  }
+    ) */
 
-  const deleteTraining = (id:number) => {
-    api.put(`/api/training/`, {id, is_delete:true}).then((res) => {
+  const deleteSkill = (id:number) => {
+    api.put(`/api/skill`, {id, is_delete:true}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose(); 
     }
@@ -74,16 +77,30 @@ const ManageTraining = () => {
 
   
 
-  const saveTraining = () => {
-    const start_date = moment(new Date(formValues.start_date)).format('YYYY-MM-DD');
-    const end_date = moment(new Date(formValues.end_date)).format('YYYY-MM-DD');
-    api.post('/api/training/', {...formValues, start_date, end_date}).then((res) => {
-    setRefreshTable(!refreshTable);
-    handleClose();
-    }).catch((err) => {
-      console.log({err})
-    }
-    )
+  const saveSkill = () => {
+    console.log({formValues})
+    const dataValues={
+        level: formValues.level,
+        name: formValues.name,
+        description: formValues.description,
+      }
+      if(defaultValue){
+          return api.put(`/api/skills/`, {...dataValues, skill_id:defaultValue.id}).then((res) => {
+              setRefreshTable(!refreshTable);
+              handleClose(); 
+              }
+              ).catch((err) => {
+                console.log({err})
+              }
+          )
+      }
+      api.post('/api/skills/', {...dataValues}).then((res) => {
+      setRefreshTable(!refreshTable);
+      handleClose();
+      }).catch((err) => {
+        console.log({err})
+      }
+      )
   }
   const handleClose = () => {
     setOpen(false);
@@ -96,53 +113,40 @@ const ManageTraining = () => {
       headerName: 'Actions',
       width: 100,
       cellClassName: 'actions',
-      getActions: (training:any) => {
+      getActions: (skill:any) => {
+        console.log({skill})
+        const {id, row} = skill;
         return [
           <IconButton 
-          key="1_trai"
-          aria-label="edit" size="small" onClick={editTraining.bind(this, training.row.id)}>
+          key="1_manage_my_vac"
+          aria-label="edit" size="small" onClick={editSkill.bind(this, row)}>
             <EditIcon fontSize="small" />
           </IconButton>,
           <IconButton 
-          key="2_trai"
-          aria-label="delete" size="small"  onClick={deleteTraining.bind(this, training.row.id)}>
+          key="2_manage_my_vac"
+          aria-label="delete" size="small"  onClick={deleteSkill.bind(this, id)}>
           <DeleteIcon fontSize="small" />
         </IconButton>
         ];
       },
     },
     
-    { field: 'title', headerName: 'Titre', width: 130 },
-    { field: 'description', headerName: 'Description', width: 130 },
+    { field: 'name', headerName: 'Nom', width: 150 },
+    { field: 'description', headerName: 'Description', width: 300 },
     {
-      field: 'start_date',
-      headerName: 'Date de début',
-      width: 150,
-    },
-    {
-      field: 'end_date',
-      headerName: 'Date de fin',
-      width: 150,
-    },
-    {
-      field: 'prerequisite_skills',
-      headerName: 'Compétences Préréquises',
-      width: 300,
-      valueGetter: (value, row) => {
-        return value?.map((skill:any) => {
-          return skill.name;
-        }).join(", ");
-      }
-    },
-    {
-      field: 'acquired_skills',
-      headerName: 'Compétences à acquérir',
-      width: 300,
-      valueGetter: (value, row) => {
-        return value?.map((skill:any) => {
-          return skill.name;
-        }).join(", ");
-      }
+      field: "level",
+      headerName: "Niveau",
+      width: 200,
+      valueGetter: (value) => {
+
+        const choices = {
+          D: "Débutant",
+          I: "Intermédiaire",
+          A: "Avancé",
+          E: "Expert",
+        };
+        return choices[value];
+      },
     }
   ];
   
@@ -153,13 +157,13 @@ const ManageTraining = () => {
         anchorOrigin={{ vertical:"top", horizontal:"center" }}
         open={openNotification}
         autoHideDuration={2000}
-        message={"Creation de la formation avec succès"}
+        message={"Creation de l'employé avec succès"}
         key={"top-center"}
       />
       <Button variant="contained"
     startIcon={<AddIcon />}
       onClick={handleClickOpen}>
-        Ajouter une formation
+        Ajouter une compétence
       </Button>
             <Dialog
         open={open}
@@ -170,19 +174,19 @@ const ManageTraining = () => {
           },
         }}
       >
-        <DialogTitle>Ajout d'une formation</DialogTitle>
+        <DialogTitle>{defaultValue?"Modifier une compétence":"Ajout d'une compétence"}</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          <AddTraining updateFormData={updateFormData} defaultFormData={{}}/>
+          <AddSkill updateFormData={updateFormData} defaultFormData={defaultValue}/>
         </DialogContent>
         <DialogActions>
         <Grid item xs={12}>
               <div className='flex items-center justify-between flex-wrap gap-5'>
                 <Button variant='contained'
-                onClick={saveTraining}
+                onClick={saveSkill}
                 >
                   Enregistrer
                 </Button>
@@ -192,9 +196,9 @@ const ManageTraining = () => {
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-      {allTraining.length?<Paper sx={{ height: "100%", width: '100%' }}>
+      {allSkills.length?<Paper sx={{ height: "100%", width: '100%' }}>
       <DataGrid
-        rows={allTraining}
+        rows={allSkills}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[25]}
@@ -207,4 +211,4 @@ const ManageTraining = () => {
   )
 }
 
-export default ManageTraining
+export default ManageSkills

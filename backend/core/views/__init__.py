@@ -5,4 +5,5 @@ from .team import *
 from .token import MyObtainTokenPairView
 from .vacation_types import CrudVacationTypesView
 from .notification_front_end import NotificationFrontEndView
-from .skill import SkillView, ListSkillView
+from .skill import SkillView, ListSkillView, AssociateSkillsToEmployee
+from .training import CrudTrainingView

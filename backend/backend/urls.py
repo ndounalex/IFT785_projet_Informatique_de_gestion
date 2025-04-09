@@ -42,4 +42,6 @@ urlpatterns = [
     path("api/notifications/", views.NotificationFrontEndView.as_view()),
     path("api/skills/", views.SkillView.as_view()),
     path("api/skills_list/", views.ListSkillView.as_view()),
+    path("api/associate_skills/", views.AssociateSkillsToEmployee.as_view()),
+    path("api/training/", views.CrudTrainingView.as_view()),
 ]

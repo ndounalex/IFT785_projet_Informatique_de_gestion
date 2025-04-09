@@ -3,7 +3,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from core.models import Skills
+from core.models import Skills, Employee
 from core.serializers import SkillSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
@@ -54,5 +54,23 @@ class ListSkillView(APIView):
     def get(self, request):
         user = JWTAuthentication().authenticate(request)[0]
         skills = Skills.objects.filter(is_deleted=False)
+        serializer = SkillSerializer(skills, many=True)
+        return Response(serializer.data)
+
+class AssociateSkillsToEmployee(APIView):
+    authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = JWTAuthentication().authenticate(request)[0]
+        employee_skills = request.data["skills"]
+        user_id = request.data["id"]
+        employee = Employee.objects.filter(id=user_id).first()
+        skills = Skills.objects.filter(is_deleted=False, id__in=employee_skills)
+        if not skills:
+            return Response({"error": "No skills found"}, status=status.HTTP_404_NOT_FOUND)
+        for skill in skills:
+            employee.skills.add(skill)
+        employee.save()
         serializer = SkillSerializer(skills, many=True)
         return Response(serializer.data)

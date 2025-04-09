@@ -5,7 +5,9 @@ import Grid from '@mui/material/Grid'
 import React, { use, useState, useEffect } from 'react';
 // Component Imports
 import FormLayoutsBasic from '@views/form-layouts/AddEmployee'
+import AssociateSkills from '@views/form-layouts/AssociateSkills'
 import Dialog from '@mui/material/Dialog';
+import AddLinkIcon from '@mui/icons-material/AddLink';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
@@ -42,6 +44,7 @@ const ManageEmployee = () => {
     is_manager: false,
     team: ""
   });
+  const [action, setAction] = useState("add");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -54,7 +57,7 @@ const ManageEmployee = () => {
     }).catch((err) => {
       console.log("============= err =============", err)
     })
-  }, []);
+  }, [refreshTable]);
 
 
 
@@ -90,9 +93,26 @@ const ManageEmployee = () => {
     )
   }
 
+  const associateSkills = (employee) => {
+    setAction("associate");
+    setDefaultFormData(employee);
+    setOpen(true);
+  }
+
   
 
   const saveEmployeeItem = () => {
+    if(action=="associate"){
+      api.post('/api/associate_skills/', {...formValues, id:defaultFormData.id}).then((res) => {
+        setRefreshTable(!refreshTable);
+        handleClose();
+        setAction("add");
+      }).catch((err) => {
+        console.log("============= err =============", err)
+      }
+      )
+      return;
+    }
     api.post('/auth/users/', {...formValues, username: formValues.email, password:"test@123456789"}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose();
@@ -101,6 +121,7 @@ const ManageEmployee = () => {
     }
     )
   }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -113,7 +134,7 @@ const ManageEmployee = () => {
       width: 100,
       cellClassName: 'actions',
       getActions: (employee:any) => {
-        console.log("============ employee =============", employee)
+        console.log({employee})
         return [
 
           <IconButton 
@@ -127,6 +148,13 @@ const ManageEmployee = () => {
             <EditIcon fontSize="small" />
           </IconButton>,
           <IconButton 
+          key="3_ma_emp"
+          aria-label="delete" size="small"  onClick={() =>{
+            associateSkills(employee.row)
+          }}>
+          <AddLinkIcon fontSize="small" />
+        </IconButton>,
+          <IconButton 
           key="2_ma_emp"
           aria-label="delete" size="small"  onClick={() =>{
             deleteEmployeeItem(employee.id)
@@ -137,32 +165,34 @@ const ManageEmployee = () => {
       },
     },
     
-    { field: 'lastname', headerName: 'Nom', width: 300 },
-    { field: 'firstname', headerName: 'Prénoms', width: 300 },
+    { field: 'lastname', headerName: 'Nom', width: 150 },
+    { field: 'firstname', headerName: 'Prénoms', width: 150 },
     {
       field: 'email',
       headerName: 'Email',
-      width: 300,
+      width: 200,
     },
     {
       field: 'team',
       headerName: 'Equipe',
-      width: 200,
+      width: 150,
       valueGetter: (value) => {
         return value?value.name:"";
       }
     },
-/*     {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    }, */
+  {
+      field: 'skills',
+      headerName: 'Compétences',
+      width: 300,
+      valueGetter: (value, row) => {
+        return value?.map((skill:any) => {
+          return skill.name;
+        }).join(", ");
+      }
+    }
   ];
   
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: 25 };
   return (
     <Grid container spacing={6} style={{width:"100%"}}>
       <Snackbar
@@ -186,13 +216,13 @@ const ManageEmployee = () => {
           },
         }}
       >
-        <DialogTitle>Ajout d'un employé</DialogTitle>
-        <DialogContent>
+        <DialogTitle>{action=="add"?"Ajout d'un employé":"Associer des compétences"}</DialogTitle>
+        <DialogContent style={{width:"600px"}}>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          <FormLayoutsBasic updateFormData={updateFormData} defaultFormData={defaultFormData}/>
+          {action=="add"?<FormLayoutsBasic updateFormData={updateFormData} defaultFormData={defaultFormData}/>:<AssociateSkills updateFormData={updateFormData} skills={defaultFormData.skills||[]}/>}
         </DialogContent>
         <DialogActions>
         <Grid item xs={12}>
@@ -208,12 +238,12 @@ const ManageEmployee = () => {
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-      {allEmployees.length?<Paper sx={{ height: 400, width: '100%' }}>
+      {allEmployees.length?<Paper sx={{ height: "100%", width: '100%' }}>
       <DataGrid
         rows={allEmployees}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[25]}
         checkboxSelection
         sx={{ border: 0 }}
       />

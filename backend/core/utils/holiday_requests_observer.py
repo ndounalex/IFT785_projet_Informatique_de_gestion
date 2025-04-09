@@ -25,12 +25,13 @@ class FrontEndNotifier(HolidayRequestObserver):
         manager = Employee.objects.filter(
             team=holiday_request.owner.team, is_manager=True
         ).first()
-        notification = NotificationFrontEnd(
-            owner=manager,
-            request=holiday_request,
-            message=f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
-        )
-        notification.save()
+        if manager:
+            notification = NotificationFrontEnd(
+                owner=manager,
+                request=holiday_request,
+                message=f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
+            )
+            notification.save()
 
 
 class EmailNotifier(HolidayRequestObserver):
