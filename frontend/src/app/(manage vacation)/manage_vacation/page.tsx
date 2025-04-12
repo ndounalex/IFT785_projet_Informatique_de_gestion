@@ -51,6 +51,7 @@ const ManageVacation = () => {
   };
 
   const editHolidayRequestItem = (row) => {
+    console.log("row", row);
     setSelectedRow(row);
     setOpen(true);
   };

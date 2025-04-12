@@ -10,4 +10,6 @@ class NotificationFrontEndSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_requester(self, notification):
+        if notification.training_request:
+            return notification.training_request.owner.id
         return notification.request.owner.id

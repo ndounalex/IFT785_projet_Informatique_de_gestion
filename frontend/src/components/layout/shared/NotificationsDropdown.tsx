@@ -60,7 +60,10 @@ const NotificationsDropdown = ({ notifications, refreshList }: MyFormProps) => {
     ) {
       return;
     }
-    api
+ 
+    
+    if (notification) {
+      api
       .put("/api/notifications/", { id: notification.id })
       .then(() => {
         refreshList();
@@ -68,12 +71,12 @@ const NotificationsDropdown = ({ notifications, refreshList }: MyFormProps) => {
       .catch((err) => {
         console.log({ err });
       });
-    if (notification) {
-        console.log()
       if (notification.owner !== notification.requester) {
-        router.push("/manage_vacation");
+        const url = notification.request?"/manage_vacation":"/manage_training_registration";
+        router.push(url);
       } else {
-        router.push("/my_vacation");
+        const url = notification.request?"/my_vacation":"/my_training";
+        router.push(url);
       }
     }
     setOpen(false);

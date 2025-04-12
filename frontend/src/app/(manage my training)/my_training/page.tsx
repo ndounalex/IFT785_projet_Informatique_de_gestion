@@ -4,7 +4,7 @@
 import Grid from '@mui/material/Grid'
 import React, { use, useState, useEffect } from 'react';
 // Component Imports
-import FormLayoutsBasic from '@views/form-layouts/AddEmployee'
+import AddTrainingRegistration from '@views/form-layouts/AddTrainingRegistration'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,7 +14,7 @@ import api from "@/app/auth/axios.config";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -24,7 +24,7 @@ const MyTraining = () => {
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState({
   });
-  const [allEmployees, setAllEmployees] = useState([]);
+  const [allTraining, setAllTraining] = useState([]);
   const [refreshTable, setRefreshTable] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
 
@@ -33,10 +33,9 @@ const MyTraining = () => {
   };
 
   useEffect(() => {
-    api.get('/api/employees').then((res) => {
-      console.log("============= res =============", res)
+    api.get('/api/training_registration').then((res) => {
       const {data} = res;
-      setAllEmployees(data);
+      setAllTraining(data);
     }).catch((err) => {
       console.log("============= err =============", err)
     })
@@ -49,41 +48,38 @@ const MyTraining = () => {
       ...prevState,
       [key]: value,
     }));
-    console.log("============ update form data ============", formValues)
   };
 
-  const editEmployeeItem = (id: number) => {
-    console.log("=================== edit employee item =====================", {formValues})
-    api.put(`/api/employees/${id}`, {...formValues}).then((res) => {
-    console.log("============= res =============", res)
+  const editTrainingRegistration = (id: number) => {
+    api.put(`/api/training_registration/`, {...formValues}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose(); 
     }
     ).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
 
-  const deleteEmployeeItem = (id:number) => {
-    api.put(`/api/employees/${id}`, {id, is_delete:true}).then((res) => {
+  const deleteTrainingRegistration = (id:number) => {
+    api.put(`/api/training_registration/`, {id, is_delete:true}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose(); 
     }
     ).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
 
   
 
-  const saveEmployeeItem = () => {
-    api.post('/auth/users/', {...formValues, username: formValues.email, password:"test@123456789"}).then((res) => {
+  const saveTrainingRegistration = () => {
+    api.post('/api/training_registration/', {...formValues}).then((res) => {
     setRefreshTable(!refreshTable);
     handleClose();
     }).catch((err) => {
-      console.log("============= err =============", err)
+      console.log({err})
     }
     )
   }
@@ -98,37 +94,60 @@ const MyTraining = () => {
       headerName: 'Actions',
       width: 100,
       cellClassName: 'actions',
-      getActions: (employee:any) => {
+      getActions: (training:any) => {
         return [
           <IconButton 
           key="my_trai_1"
-          aria-label="edit" size="small" onClick={editEmployeeItem.bind(this, employee.id)}>
+          aria-label="edit" size="small" onClick={editTrainingRegistration.bind(this, training.row.id)}>
             <EditIcon fontSize="small" />
           </IconButton>,
           <IconButton
           key="2_my_trai"
-          aria-label="delete" size="small"  onClick={deleteEmployeeItem.bind(this, employee.id)}>
+          aria-label="delete" size="small"  onClick={deleteTrainingRegistration.bind(this, training.row.id)}>
           <DeleteIcon fontSize="small" />
         </IconButton>
         ];
       },
     },
     
-    { field: 'lastname', headerName: 'Nom', width: 130 },
-    { field: 'firstname', headerName: 'Prénoms', width: 130 },
+    { field: 'title', headerName: 'Titre', width: 300,valueGetter: (value, row) => {
+      return row.training.title;
+    }},
+    { field: 'description', headerName: 'Description', width: 300 ,valueGetter: (value, row) => {
+      return row.training.description;
+    }},
     {
-      field: 'email',
-      headerName: 'Email',
-      width: 90,
+      field: 'start_date',
+      headerName: 'Date de début',
+      width: 150,
+      valueGetter: (value, row) => {
+        return row.training.start_date;
+      }
     },
-/*     {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    }, */
+    {
+      field: 'end_date',
+      headerName: 'Date de fin',
+      width: 150,
+      valueGetter: (value, row) => {
+        return row.training.end_date;
+      }
+    },
+    {
+      field: 'status',
+      headerName: 'Statut',
+      width: 300,
+      valueGetter: (value) => {
+        const choices = {
+          'R': {label:"Réfusé", color:"error"},
+          "I":{label:"En traitement", color:"secondary"},
+          "V": {label:"Validé", color:"success"},
+        }
+        return choices[value];
+      },
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <Chip label={params?.value?.label} color={params?.value?.color} />
+      )
+    },
   ];
   
   const paginationModel = { page: 0, pageSize: 5 };
@@ -144,7 +163,7 @@ const MyTraining = () => {
       <Button variant="contained"
     startIcon={<AddIcon />}
       onClick={handleClickOpen}>
-        Ajouter un employé
+        Ajouter une demande de formation
       </Button>
             <Dialog
         open={open}
@@ -155,19 +174,19 @@ const MyTraining = () => {
           },
         }}
       >
-        <DialogTitle>Ajout d'un employé</DialogTitle>
-        <DialogContent>
+        <DialogTitle>Ajout d'une inscription</DialogTitle>
+        <DialogContent  style={{width:"600px"}}>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          <FormLayoutsBasic updateFormData={updateFormData}/>
+          <AddTrainingRegistration updateFormData={updateFormData}/>
         </DialogContent>
         <DialogActions>
         <Grid item xs={12}>
               <div className='flex items-center justify-between flex-wrap gap-5'>
                 <Button variant='contained'
-                onClick={saveEmployeeItem}
+                onClick={saveTrainingRegistration}
                 >
                   Enregistrer
                 </Button>
@@ -177,9 +196,9 @@ const MyTraining = () => {
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-      {allEmployees.length?<Paper sx={{ height: 400, width: '100%' }}>
+      {allTraining.length?<Paper sx={{ height: 400, width: '100%' }}>
       <DataGrid
-        rows={allEmployees}
+        rows={allTraining}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}

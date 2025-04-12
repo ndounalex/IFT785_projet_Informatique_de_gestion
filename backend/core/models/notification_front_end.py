@@ -18,6 +18,9 @@ class NotificationFrontEnd(common):  # STUDENT
     request = models.ForeignKey(
         "HolidaysRequest", on_delete=models.CASCADE, null=True, blank=True
     )
+    training_request = models.ForeignKey(
+        "TrainingRegistration", on_delete=models.CASCADE, null=True, blank=True
+    )
     date = models.DateTimeField(default=datetime.now)
     vue = models.BooleanField(default=False)
 

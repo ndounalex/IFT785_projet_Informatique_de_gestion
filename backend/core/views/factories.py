@@ -1,7 +1,8 @@
 from core.models import *
 from datetime import date
 from django.core.exceptions import ValidationError
-from core import notification_manager
+from core import notification_manager, training_notification_manager
+
 
 class HolidaysRequestFactory:
     @staticmethod
@@ -51,3 +52,37 @@ class VacationValidationFactory:
             notification_manager.notify(request, "refusée")
 
         return validation
+
+class TrainingRequestFactory:
+    @staticmethod
+    def create(trainings, employee):
+        ids = []
+        for training in trainings:
+            training_obj = Training.objects.get(id=training)
+            training_registration = TrainingRegistration.objects.create(
+                owner=employee,
+                training=training_obj,
+            )
+            training_registration.save()
+            ids.append(training_registration.id)
+            print(f"Training Registration created: {training_registration}")
+            training_notification_manager.notify(training_registration, "crée")
+        trainings = TrainingRegistration.objects.filter(id__in=ids)
+        return trainings
+
+class TrainingRegistrationValidationFactory:
+    @staticmethod
+    def validate(training_registration: TrainingRegistration, decision, reason=None):
+        if decision not in ['V', 'R']:
+            raise ValidationError("Décision invalide.")
+        training_registration.reason = reason
+        # Mise à jour de l'état via le State Pattern
+        if decision == "V":
+            training_registration.approved()
+            print(training_registration)
+            training_notification_manager.notify(training_registration, "validée")
+        else:
+            training_registration.rejected()
+            training_notification_manager.notify(training_registration, "refusée")
+
+        return training_registration

@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+from core.utils.notification_adapter import NotificationSender
 class UniqueNotificationTypeManager(type):
     """
     A metaclass that ensures only one instance of a class with a specific
@@ -18,7 +18,7 @@ class UniqueNotificationTypeManager(type):
             cls._instances[cls] = instance
         return cls._instances[cls]
 
-class EmailNotificationManager(metaclass=UniqueNotificationTypeManager):
+class EmailNotificationManager(NotificationSender, metaclass=UniqueNotificationTypeManager):
     """
     A singleton class to manage email notifications.
     """
@@ -29,18 +29,18 @@ class EmailNotificationManager(metaclass=UniqueNotificationTypeManager):
         self._server = server
         self._port = port
 
-    def send_email(self, recipient: str, subject: str, body: str):
+    def send(self, recipient, message: str, holiday_request, training_request, subject: str):
         """
         Simulate sending an email.
         In a real-world scenario, you would use an email library like smtplib.
         """
-        print(f"Sending email to {recipient} with subject '{subject}' and body '{body}'")
+        print(f"Sending email to {recipient} with subject '{subject}' and body '{message}'")
         try:
             msg = MIMEMultipart()
             msg['From'] = self._email
-            msg['To'] = recipient
+            msg['To'] = recipient.email,
             msg['Subject'] = subject
-            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(message, 'plain'))
             with smtplib.SMTP(self._server, self._port) as server:
                 server.starttls()
                 server.login(self._email, self._password)

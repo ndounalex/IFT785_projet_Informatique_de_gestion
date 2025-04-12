@@ -44,4 +44,7 @@ urlpatterns = [
     path("api/skills_list/", views.ListSkillView.as_view()),
     path("api/associate_skills/", views.AssociateSkillsToEmployee.as_view()),
     path("api/training/", views.CrudTrainingView.as_view()),
+    path("api/training_registration/", views.TrainingRegistrationView.as_view()),
+    path("api/training_registration_validate/", views.ValidateTrainingRequestView.as_view()),
+    path("api/manager_training_registration/", views.ManagerTrainingRegistrationView.as_view()),
 ]

@@ -2,6 +2,7 @@
 
 'use client';
 import Grid from '@mui/material/Grid'
+import Chip from '@mui/material/Chip';
 import React, { use, useState, useEffect } from 'react';
 // Component Imports
 import AddTraining from '@views/form-layouts/AddTraining'
@@ -143,6 +144,23 @@ const ManageTraining = () => {
           return skill.name;
         }).join(", ");
       }
+    },{
+      field: 'status',
+      headerName: 'Statut',
+      width: 300,
+      valueGetter: (value) => {
+
+        const choices = {
+          'P': {label:"Prévue", color:"info"},
+          "E":{label:"En cours", color:"secondary"},
+          "T": {label:"Terminée", color:"success"},
+          "A": {label:"Annulée", color:"error"},
+        }
+        return choices[value];
+      },
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <Chip label={params?.value?.label} color={params?.value?.color} />
+      )
     }
   ];
   

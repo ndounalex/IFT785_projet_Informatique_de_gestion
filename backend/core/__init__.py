@@ -1,1 +1,2 @@
 from .utils.holiday_requests_observer import notification_manager
+from .utils.training_request_observer import training_notification_manager

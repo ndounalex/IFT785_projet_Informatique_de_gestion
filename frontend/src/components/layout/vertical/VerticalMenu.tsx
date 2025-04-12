@@ -118,6 +118,16 @@ const VerticalMenu = ({ scrollMenu }: { scrollMenu: (container: any, isPerfectSc
           >
             Gestion des formations
           </MenuItem>:null}
+          {userData?.is_manager?<MenuItem
+            onClick={() => {
+              router.push('/manage_training_registration');
+            }}
+            icon={<i className='ri-book-2-fill' />}
+            /* suffix={<Chip label='Pro' size='small' color='primary' variant='tonal' />} */
+            target='_blank'
+          >
+            validation des formations
+          </MenuItem>:null}
           {userData?.is_admin?<MenuItem
             /* href={`/manage_employee`} */
             onClick={() => {

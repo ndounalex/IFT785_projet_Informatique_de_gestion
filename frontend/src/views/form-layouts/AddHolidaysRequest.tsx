@@ -38,6 +38,7 @@ const AddHolidayRequest = ({ updateFormData, disable, defaultFormData }: MyFormP
     const [maxDate, setMaxDate] = useState(null);
     const [vacationTypes, setVacationTypes] = useState([]);
     const [vacationType, setVacationType] = useState('');
+    const [requestStatus, setRequestStatus] = useState('');
 
     useEffect(() => {
       api.get('/api/vacation_type').then((res) => {
@@ -47,7 +48,9 @@ const AddHolidayRequest = ({ updateFormData, disable, defaultFormData }: MyFormP
         console.log("============= err =============", err)
       })
     }, []);
-    console.log({defaultFormData})
+    useEffect(() => {
+      setRequestStatus(defaultFormData?.status);
+    }, [defaultFormData?.status]);
   return (
           <Grid container spacing={5} style={{marginBottom:"70px", marginTop:"10px"}}>
             <Grid item xs={6}>
@@ -110,10 +113,10 @@ const AddHolidayRequest = ({ updateFormData, disable, defaultFormData }: MyFormP
             </Grid>
             {disable && <Grid item xs={12}>
             <TextField id="decision" label="Décision" 
-            value={vacationType}
+            value={requestStatus}
             style={{ width: "100%" }}
             onChange={(e) => {
-              setVacationType(e.target.value);
+              setRequestStatus(e.target.value);
               updateFormData("decision", e.target.value);
             }}
             select>

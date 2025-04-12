@@ -18,9 +18,6 @@ class CrudHolidaysRequestView(APIView):
     def post(self, request):
         user = JWTAuthentication().authenticate(request)[0]
         #user = self.request.user
-        print(user)
-        print(user.id)
-        print(request)
         holidays_begin = request.data["holidays_begin"]
         holidays_end = request.data["holidays_end"]
         data = request.data
@@ -51,15 +48,11 @@ class ValidateHolidaysRequestView(APIView):
     def post(self, request):
         user = JWTAuthentication().authenticate(request)[0]
         #user = self.request.user
-        print(user)
-        print(user.id)
-        print(request)
         manager = Employee.objects.filter(
             team=user.team,
             is_manager=True
         ).first()
         holiday = HolidaysRequest.objects.get(id=request.data['id'])
-        serializer = HolidaysRequestCreateSerializer(holiday)
         try:
             validation = VacationValidationFactory.validate(
                 request=holiday,

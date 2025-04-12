@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from core.utils.email_notification_manager_singleton import EmailNotificationManager
-
+from core.utils.notification_adapter import NotificationFrontEndAdapter, notify_user
 
 class HolidayRequestObserver(ABC):
     @abstractmethod
@@ -16,22 +16,24 @@ class FrontEndNotifier(HolidayRequestObserver):
         print(
             f"[Notification] Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}."
         )
-        notification = NotificationFrontEnd(
-            owner=holiday_request.owner,
-            request=holiday_request,
-            message=f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
-        )
-        notification.save()
+        notify_user(
+            NotificationFrontEndAdapter,
+            holiday_request.owner,
+            f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
+            holiday_request=holiday_request,
+            training_request=None,
+            subject=None)
         manager = Employee.objects.filter(
             team=holiday_request.owner.team, is_manager=True
         ).first()
         if manager:
-            notification = NotificationFrontEnd(
-                owner=manager,
-                request=holiday_request,
-                message=f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
-            )
-            notification.save()
+            notify_user(
+                NotificationFrontEndAdapter,
+                manager,
+                f"Demande de congé #{holiday_request.id} faite par {holiday_request.owner} a été {event}.",
+                holiday_request=holiday_request,
+                training_request=None,
+                subject=None)
 
 
 class EmailNotifier(HolidayRequestObserver):
@@ -42,11 +44,13 @@ class EmailNotifier(HolidayRequestObserver):
         print(
             f"[Email] À {holiday_request.owner} : votre demande a été {event.lower()}."
         )  # Simulé
-        return self._mail_notification_manager.send_email(
-            holiday_request.owner.email,
-            f"Demande #{holiday_request.id} {event}",
+        return notify_user(
+            self._mail_notification_manager,
+            holiday_request.owner,
             f"Bonjour,\n\nLa demande de congé a été {event.lower()}.\n\nCordialement,\nL'équipe de gestion des congés",
-        )
+            holiday_request=holiday_request,
+            training_request=None,
+            subject=f"Demande #{holiday_request.id} {event}")
 
 
 class NotificationManager:
