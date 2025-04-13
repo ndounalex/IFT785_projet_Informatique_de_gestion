@@ -29,3 +29,4 @@ class NotificationFrontEndView(APIView):
             item.save()
             serializer = NotificationFrontEndSerializer(item)
             return Response(serializer.data)
+        return Response({"message": f"Notification {notification} not found."})

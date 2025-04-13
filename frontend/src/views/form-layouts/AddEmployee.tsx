@@ -128,7 +128,7 @@ const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
 
             </Grid>
 
-            <Grid item xs={12}>
+{/*             <Grid item xs={12}>
             <TextField id="skills" label="Compétences"
             style={{ width: "100%" }}
             value={skills}
@@ -157,7 +157,7 @@ const FormLayoutsBasic = ({ updateFormData }: MyFormProps) => {
                 )})}
             </TextField>
 
-            </Grid>
+            </Grid> */}
             
 
 

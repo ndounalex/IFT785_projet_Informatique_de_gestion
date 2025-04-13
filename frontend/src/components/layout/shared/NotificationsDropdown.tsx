@@ -115,7 +115,7 @@ const NotificationsDropdown = ({ notifications, refreshList }: MyFormProps) => {
                   handleDropdownClose(null, e as MouseEvent | TouchEvent)
                 }
               >
-                <MenuList>
+                <MenuList style={{maxHeight:"300px", overflowY:"auto"}}>
                   <Divider className="mlb-1" />
                   {notifications.map((notification: any, index: number) => (
                     <MenuItem
